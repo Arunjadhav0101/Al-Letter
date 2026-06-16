@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
+// @ts-ignore
 import "./globals.css";
 import { montserrat } from "@/lib/fonts";
 import Navbar from "@/components/Navbar/Navbar";
