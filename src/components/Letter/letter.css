@@ -1,0 +1,53 @@
+
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+    background: none;
+  }
+  #letter{
+    background-color: white;
+    color:black;
+    padding: 10px 0!important;
+    margin: 0.8rem auto!important;
+  }
+}
+
+#letter{
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding: 1rem;
+  max-width: 21cm;
+  margin: 100px auto;
+  height: fit-content;
+}
+/* .letter-navbar-top {
+  grid-area: navbar;
+  background-color: #333;
+  color: white;
+  padding: 1rem;
+}
+
+.main {
+  grid-area: main;
+  padding: 1.5rem;
+} */
+/* 
+.footer {
+  grid-area: footer;
+  background-color: #333;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+}
+
+.letter-container {
+  display: grid;
+  grid-template-areas:
+    "navbar"
+    "main"
+    "footer";
+  grid-template-rows: auto 1fr auto;
+  height: 100vh;
+} */
