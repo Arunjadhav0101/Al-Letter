@@ -1,0 +1,57 @@
+#!/bin/bash
+
+# Setup script and instructions for AWS EKS & DevOps Pipeline
+
+echo "================================================================="
+echo "  🚀 AWS EKS + K8s + Terraform + Jenkins DevOps Setup"
+echo "================================================================="
+
+echo "This script provides instructions on how to set up the infrastructure."
+echo ""
+echo "### PREREQUISITES"
+echo "Ensure you have the following installed locally and on your Jenkins worker:"
+echo "1. AWS CLI (configured with 'aws configure')"
+echo "2. Terraform"
+echo "3. kubectl"
+echo ""
+
+echo "### STEP 1: Provision Infrastructure with Terraform"
+echo "Run the following commands to create the VPC, EKS cluster, and install Prometheus/Grafana & NGINX Ingress:"
+echo "  cd terraform/"
+echo "  terraform init"
+echo "  terraform apply -auto-approve"
+echo ""
+echo "This will take about 15-20 minutes to complete."
+echo ""
+
+echo "### STEP 2: Configure kubectl"
+echo "Once Terraform completes, update your local kubeconfig to access the new cluster:"
+echo "  aws eks update-kubeconfig --region us-east-1 --name al-letter-cluster"
+echo ""
+
+echo "### STEP 3: Jenkins Configuration"
+echo "To allow Jenkins to deploy to the EKS cluster, you need to configure its credentials:"
+echo "1. Install 'Kubernetes CLI Plugin' in Jenkins."
+echo "2. Go to Jenkins -> Manage Jenkins -> Credentials."
+echo "3. Add a new credential of kind 'Secret file'."
+echo "4. Upload your local '~/.kube/config' file generated in Step 2."
+echo "5. Give it the ID 'kubeconfig'."
+echo ""
+
+echo "### STEP 4: Access Services"
+echo "After running the Jenkins pipeline successfully, you can access your services:"
+echo ""
+echo "1. **Application**: It will be available securely at https://arun.run.place"
+echo "   (Note: DNS propagation and certificate provisioning might take a few minutes.)"
+echo ""
+echo "2. **Grafana**: Port-forward to access the Grafana dashboard locally:"
+echo "   kubectl port-forward svc/kube-prometheus-stack-grafana 8080:80 -n monitoring"
+echo "   -> Open http://localhost:8080"
+echo "   -> Username: admin | Password: admin (from terraform/monitoring.tf)"
+echo ""
+echo "3. **Prometheus**: Port-forward to access Prometheus locally:"
+echo "   kubectl port-forward svc/kube-prometheus-stack-prometheus 9090:9090 -n monitoring"
+echo "   -> Open http://localhost:9090"
+echo ""
+
+echo "Done! The Jenkins pipeline is now configured to build your docker image and deploy to EKS."

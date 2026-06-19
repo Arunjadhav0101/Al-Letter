@@ -10,8 +10,10 @@ pipeline {
 
         stage('Clone Repository') {
             steps {
-                git branch: 'main',
-                url: 'https://github.com/Arunjadhav0101/templatz.git'
+                git(
+                    branch: 'main',
+                    url: 'https://github.com/Arunjadhav0101/Al-Letter.git'
+                )
             }
         }
 
@@ -43,7 +45,7 @@ pipeline {
                     )
                 ]) {
                     sh '''
-                    echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
                     '''
                 }
             }
@@ -51,23 +53,29 @@ pipeline {
 
         stage('Push Docker Image') {
             steps {
-                sh 'docker push $IMAGE_NAME:$TAG'
-                sh 'docker tag $IMAGE_NAME:$TAG $IMAGE_NAME:latest'
-                sh 'docker push $IMAGE_NAME:latest'
+                sh '''
+                    docker push $IMAGE_NAME:$TAG
+                    docker tag $IMAGE_NAME:$TAG $IMAGE_NAME:latest
+                    docker push $IMAGE_NAME:latest
+                '''
             }
         }
 
-        stage('Deploy Container') {
+        stage('Deploy to EKS') {
             steps {
-                sh '''
-                docker stop templatz || true
-                docker rm templatz || true
+                // Assuming 'kubeconfig' is configured in Jenkins Credentials
+                withKubeConfig([credentialsId: 'kubeconfig', serverUrl: '']) {
+                    sh '''
+                        # Apply all manifests in k8s directory
+                        kubectl apply -f k8s/
 
-                docker run -d \
-                --name templatz \
-                -p 80:3000 \
-                $IMAGE_NAME:latest
-                '''
+                        # Force deployment to update to the newly pushed image tag
+                        kubectl set image deployment/templatz templatz=$IMAGE_NAME:$TAG -n templatz-prod
+                        
+                        # Wait for rollout to complete
+                        kubectl rollout status deployment/templatz -n templatz-prod
+                    '''
+                }
             }
         }
     }
