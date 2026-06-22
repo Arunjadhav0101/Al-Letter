@@ -3,7 +3,7 @@ module "eks" {
   version = "20.2.1"
 
   cluster_name    = var.cluster_name
-  cluster_version = "1.29"
+  cluster_version = "1.32"
 
   cluster_endpoint_public_access  = true
 
