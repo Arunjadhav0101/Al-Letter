@@ -66,6 +66,7 @@ pipeline {
                 // Assuming 'kubeconfig' is configured in Jenkins Credentials
                 withKubeConfig([credentialsId: 'kubeconfig', serverUrl: '']) {
                     sh '''
+                        kubectl apply -f k8s/namespace.yaml
                         # Apply all manifests in k8s directory
                         kubectl apply -f k8s/
 
